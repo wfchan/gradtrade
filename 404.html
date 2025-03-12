@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // string into a redirect that preserves the path and query parameters
+    (function(l) {
+      if (l.search[1] === '/' ) {
+        var decoded = l.search.slice(1).split('&').map(function(s) { 
+          return s.replace(/~and~/g, '&')
+        }).join('?');
+        window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    }(window.location))
+  </script>
+  <script>
+    // This script redirects all paths to the HashRouter format
+    // For GitHub Pages with HashRouter
+    const pathSegments = window.location.pathname.split('/');
+    let redirectPath = '';
+    
+    // Find the path after '/gradtrade/'
+    let foundGradTrade = false;
+    for (let i = 1; i < pathSegments.length; i++) {
+      if (foundGradTrade) {
+        redirectPath += '/' + pathSegments[i];
+      } else if (pathSegments[i] === 'gradtrade') {
+        foundGradTrade = true;
+      }
+    }
+    
+    // If no path was found or just '/gradtrade/', use root path
+    if (!redirectPath) {
+      redirectPath = '/';
+    }
+    
+    // Store for potential use by the app
+    sessionStorage.setItem('redirectPath', redirectPath);
+    
+    // Redirect to the HashRouter version of the URL
+    window.location.replace('/gradtrade/#' + redirectPath);
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a href="/gradtrade/">click here</a>.</p>
+</body>
+</html>
