@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/gradtrade/static/css/main.0b38960e.css",
+    "main.js": "/gradtrade/static/js/main.4370a9a8.js",
+    "index.html": "/gradtrade/index.html",
+    "main.0b38960e.css.map": "/gradtrade/static/css/main.0b38960e.css.map",
+    "main.4370a9a8.js.map": "/gradtrade/static/js/main.4370a9a8.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0b38960e.css",
+    "static/js/main.4370a9a8.js"
+  ]
+}
