@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Alert, Spinner, Row, Col, Badge } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getBacktestResult } from '../services/api';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
@@ -11,6 +11,9 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const BacktestResults = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const symbol = queryParams.get('symbol');
   
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,8 +22,8 @@ const BacktestResults = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch backtest results
-        const data = await getBacktestResult(id);
+        // Fetch backtest results, passing the symbol parameter
+        const data = await getBacktestResult(id, symbol);
         setResult(data);
         setLoading(false);
       } catch (err) {
@@ -31,7 +34,7 @@ const BacktestResults = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, symbol]);
 
   // Prepare portfolio value chart data
   const portfolioChartData = result ? {

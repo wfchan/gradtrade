@@ -131,23 +131,24 @@ export const runBacktest = async (backtestData) => {
   }
 };
 
-export const getBacktestResult = async (backtestId) => {
+export const getBacktestResult = async (backtestId, symbol) => {
   if (USE_MOCK_DATA) {
-    // Check if this is a MSFT backtest based on the ID
-    if (backtestId.includes('mock-backtest-') && backtestId.length > 20) {
-      // This is a dynamically generated backtest ID
-      // Extract the strategy from the URL if possible
-      const urlParams = new URLSearchParams(window.location.search);
-      const symbol = urlParams.get('symbol');
-      
-      if (symbol === 'MSFT') {
-        return mockBacktestResults['mock-strategy-2'];
-      }
-    } else if (backtestId === 'mock-backtest-2') {
+    // Directly use the symbol parameter to determine which backtest result to return
+    if (symbol === 'MSFT') {
+      console.log('Returning MSFT backtest results');
+      return mockBacktestResults['mock-strategy-2'];
+    } else if (symbol === 'AAPL') {
+      console.log('Returning AAPL backtest results');
+      return mockBacktestResults['mock-strategy-1'];
+    }
+    
+    // If we still don't have a symbol match, try to check the ID
+    if (backtestId === 'mock-backtest-2') {
       return mockBacktestResults['mock-strategy-2'];
     }
     
     // Default to AAPL
+    console.log('No symbol match, defaulting to AAPL backtest results');
     return mockBacktestResults['mock-strategy-1'];
   }
   
