@@ -184,8 +184,9 @@ const BacktestResults = () => {
         </Col>
       </Row>
       
-      <div className="mb-4" style={{ width: '100%' }}>
-        <Card style={{ width: '100%' }}>
+      <Row className="mb-4">
+        <Col xs={12}>
+          <Card className="w-100">
             <Card.Header as="h5">Stock Price with Grid Levels</Card.Header>
             <Card.Body style={{ height: '900px' }}>
               {result && (
@@ -205,8 +206,9 @@ const BacktestResults = () => {
                 />
               )}
             </Card.Body>
-        </Card>
-      </div>
+          </Card>
+        </Col>
+      </Row>
       
       <Row className="mb-4">
         <Col md={6}>
