@@ -188,7 +188,7 @@ const BacktestResults = () => {
         <Col>
           <Card>
             <Card.Header as="h5">Stock Price with Grid Levels</Card.Header>
-            <Card.Body style={{ height: '700px' }}>
+            <Card.Body style={{ height: '900px' }}>
               {result && (
                 <GridTradeChart 
                   stockData={{

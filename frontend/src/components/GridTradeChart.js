@@ -104,20 +104,20 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
     // Create horizontal line annotations for grid levels
     const gridLevelAnnotations = gridLevels.map((level, index) => ({
       type: 'line',
-      borderColor: 'rgba(100, 100, 100, 0.7)',
-      borderWidth: 1.5,
-      borderDash: [6, 6],
+      borderColor: 'rgba(80, 80, 80, 0.8)',
+      borderWidth: 2,
+      borderDash: [8, 6],
       label: {
         display: true,
         content: `Grid ${index} - $${level}`,
         position: 'start',
-        backgroundColor: 'rgba(80, 80, 80, 0.85)',
+        backgroundColor: 'rgba(60, 60, 60, 0.9)',
         color: 'white',
         font: {
-          size: 12,
+          size: 14,
           weight: 'bold'
         },
-        padding: 6
+        padding: 8
       },
       scaleID: 'y',
       value: level
@@ -307,7 +307,7 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
   }, [stockData, gridLevels, trades]);
 
   return (
-    <div className="grid-trade-chart-container" style={{ height: '700px', width: '100%' }}>
+    <div className="grid-trade-chart-container" style={{ height: '900px', width: '100%' }}>
       <canvas ref={chartRef}></canvas>
     </div>
   );
