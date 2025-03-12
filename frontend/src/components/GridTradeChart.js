@@ -166,6 +166,9 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: 0
+        },
         interaction: {
           mode: 'index',
           intersect: false
@@ -307,8 +310,8 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
   }, [stockData, gridLevels, trades]);
 
   return (
-    <div className="grid-trade-chart-container" style={{ height: '900px', width: '100%' }}>
-      <canvas ref={chartRef}></canvas>
+    <div className="grid-trade-chart-container" style={{ height: '900px', width: '100%', maxWidth: '100%', margin: '0 auto' }}>
+      <canvas ref={chartRef} style={{ maxWidth: '100%' }}></canvas>
     </div>
   );
 };

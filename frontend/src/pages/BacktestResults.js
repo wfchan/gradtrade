@@ -123,7 +123,7 @@ const BacktestResults = () => {
   }
 
   return (
-    <div>
+    <div className="container-fluid p-0">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Backtest Results: {result.strategy.symbol}</h1>
         <Link to="/backtest" className="btn btn-outline-primary">
@@ -184,9 +184,8 @@ const BacktestResults = () => {
         </Col>
       </Row>
       
-      <Row className="mb-4">
-        <Col>
-          <Card>
+      <div className="mb-4" style={{ width: '100%' }}>
+        <Card style={{ width: '100%' }}>
             <Card.Header as="h5">Stock Price with Grid Levels</Card.Header>
             <Card.Body style={{ height: '900px' }}>
               {result && (
@@ -206,9 +205,8 @@ const BacktestResults = () => {
                 />
               )}
             </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+        </Card>
+      </div>
       
       <Row className="mb-4">
         <Col md={6}>
