@@ -46,18 +46,37 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
     const dates = stockData.data.map(item => item.Date);
     const prices = stockData.data.map(item => item.Close);
 
-    // Convert dates to proper Date objects for consistent parsing
-    const dateMap = {};
-    stockData.data.forEach((item, index) => {
-      dateMap[item.Date] = index; // Create a mapping of date strings to indices
-    });
+    // Convert dates to Date objects for consistent parsing
+    const dateObjects = dates.map(date => new Date(date));
+    
+    // Find the closest date index for a given trade date
+    const findClosestDateIndex = (tradeDate) => {
+      const tradeDateObj = new Date(tradeDate);
+      
+      // First try exact match
+      const exactMatchIndex = dates.findIndex(date => date === tradeDate);
+      if (exactMatchIndex !== -1) return exactMatchIndex;
+      
+      // If no exact match, find the closest date
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      
+      dateObjects.forEach((dateObj, index) => {
+        const diff = Math.abs(dateObj.getTime() - tradeDateObj.getTime());
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = index;
+        }
+      });
+      
+      return closestIndex;
+    };
     
     // Prepare buy and sell markers
     const buyMarkers = trades
       .filter(trade => trade.type === 'buy')
       .map(trade => {
-        // Find the closest date in our stock data
-        const closestDateIndex = dateMap[trade.date] || 0;
+        const closestDateIndex = findClosestDateIndex(trade.date);
         return {
           x: dates[closestDateIndex],
           y: trade.price,
@@ -71,8 +90,7 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
     const sellMarkers = trades
       .filter(trade => trade.type === 'sell')
       .map(trade => {
-        // Find the closest date in our stock data
-        const closestDateIndex = dateMap[trade.date] || 0;
+        const closestDateIndex = findClosestDateIndex(trade.date);
         return {
           x: dates[closestDateIndex],
           y: trade.price,
@@ -86,17 +104,20 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
     // Create horizontal line annotations for grid levels
     const gridLevelAnnotations = gridLevels.map((level, index) => ({
       type: 'line',
-      borderColor: 'rgba(100, 100, 100, 0.5)',
-      borderWidth: 1,
-      borderDash: [5, 5],
+      borderColor: 'rgba(100, 100, 100, 0.7)',
+      borderWidth: 1.5,
+      borderDash: [6, 6],
       label: {
         display: true,
         content: `Grid ${index} - $${level}`,
         position: 'start',
-        backgroundColor: 'rgba(100, 100, 100, 0.7)',
+        backgroundColor: 'rgba(80, 80, 80, 0.85)',
+        color: 'white',
         font: {
-          size: 10
-        }
+          size: 12,
+          weight: 'bold'
+        },
+        padding: 6
       },
       scaleID: 'y',
       value: level
@@ -113,28 +134,30 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
             data: prices,
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderWidth: 1, // Thinner line (reduced from 2)
-            tension: 0.1,
-            fill: false
+            borderWidth: 2,
+            tension: 0.2,
+            fill: true
           },
           {
             label: 'Buy Orders',
             data: buyMarkers,
-            backgroundColor: 'rgba(54, 162, 235, 0.8)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 0.9)',
+            borderColor: 'rgba(255, 255, 255, 1)',
+            borderWidth: 2,
             pointStyle: 'triangle',
-            pointRadius: 6, // Slightly smaller points
-            pointHoverRadius: 10,
+            pointRadius: 8,
+            pointHoverRadius: 12,
             showLine: false
           },
           {
             label: 'Sell Orders',
             data: sellMarkers,
-            backgroundColor: 'rgba(255, 99, 132, 0.8)',
-            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.9)',
+            borderColor: 'rgba(255, 255, 255, 1)',
+            borderWidth: 2,
             pointStyle: 'triangle',
-            pointRadius: 6, // Slightly smaller points
-            pointHoverRadius: 10,
+            pointRadius: 8,
+            pointHoverRadius: 12,
             rotation: 180,
             showLine: false
           }
@@ -149,7 +172,29 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
         },
         plugins: {
           tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleFont: {
+              size: 14,
+              weight: 'bold'
+            },
+            bodyFont: {
+              size: 13
+            },
+            padding: {
+              top: 10,
+              right: 12,
+              bottom: 10,
+              left: 12
+            },
+            cornerRadius: 6,
             callbacks: {
+              title: function(tooltipItems) {
+                return new Date(tooltipItems[0].label).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                });
+              },
               label: function(context) {
                 const datasetLabel = context.dataset.label || '';
                 const value = context.parsed.y;
@@ -174,10 +219,25 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
           },
           legend: {
             position: 'top',
+            labels: {
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: 16
+            }
           },
           title: {
             display: true,
-            text: `${stockData.symbol} Grid Trading Chart`
+            text: `${stockData.symbol} Grid Trading Chart`,
+            font: {
+              size: 18,
+              weight: 'bold'
+            },
+            padding: {
+              top: 10,
+              bottom: 20
+            }
           }
         },
         scales: {
@@ -192,17 +252,47 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
             },
             title: {
               display: true,
-              text: 'Date'
+              text: 'Date',
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: {
+                top: 10,
+                bottom: 4
+              }
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.2)'
             },
             ticks: {
               maxRotation: 45,
-              minRotation: 45
+              minRotation: 45,
+              font: {
+                size: 12
+              }
             }
           },
           y: {
             title: {
               display: true,
-              text: 'Price ($)'
+              text: 'Price ($)',
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: {
+                top: 4,
+                bottom: 10
+              }
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.2)'
+            },
+            ticks: {
+              font: {
+                size: 12
+              }
             }
           }
         }
@@ -217,7 +307,7 @@ const GridTradeChart = ({ stockData, gridLevels, trades }) => {
   }, [stockData, gridLevels, trades]);
 
   return (
-    <div className="grid-trade-chart-container" style={{ height: '500px', width: '100%' }}>
+    <div className="grid-trade-chart-container" style={{ height: '700px', width: '100%' }}>
       <canvas ref={chartRef}></canvas>
     </div>
   );
