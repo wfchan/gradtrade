@@ -79,16 +79,17 @@ export const mockStrategies = [
   }
 ];
 
-export const mockBacktestResult = {
-  _id: "mock-backtest-1",
-  strategy: {
-    symbol: "AAPL",
-    upper_price: 170,
-    lower_price: 140,
-    num_grids: 7,
-    investment_amount: 10000,
-    grid_levels: [140, 145, 150, 155, 160, 165, 170]
-  },
+export const mockBacktestResults = {
+  "mock-strategy-1": {
+    _id: "mock-backtest-1",
+    strategy: {
+      symbol: "AAPL",
+      upper_price: 170,
+      lower_price: 140,
+      num_grids: 7,
+      investment_amount: 10000,
+      grid_levels: [140, 145, 150, 155, 160, 165, 170]
+    },
   backtest_period: {
     start_date: "2024-03-12",
     end_date: "2025-03-12",
@@ -154,11 +155,88 @@ export const mockBacktestResult = {
     trade_profit: 1250
   },
   created_at: "2025-03-12T05:30:00.000Z"
+  },
+  "mock-strategy-2": {
+    _id: "mock-backtest-2",
+    strategy: {
+      symbol: "MSFT",
+      upper_price: 400,
+      lower_price: 350,
+      num_grids: 6,
+      investment_amount: 15000,
+      grid_levels: [350, 360, 370, 380, 390, 400]
+    },
+    backtest_period: {
+      start_date: "2024-03-12",
+      end_date: "2025-03-12",
+      days: 365
+    },
+    trades: Array(48).fill().map((_, index) => {
+      // Create evenly distributed trades across the year
+      const date = new Date("2024-03-12");
+      date.setDate(date.getDate() + Math.floor(index * (365 / 48)));
+      
+      const type = index % 2 === 0 ? "buy" : "sell";
+      const gridLevel = index % 6; // Ensure we use all grid levels
+      const price = 350 + (gridLevel * 10); // Exact grid level price for better visualization
+      const shares = 5 + Math.floor(index / 10); // More consistent share amounts
+      const amount = price * shares;
+      
+      return {
+        date: date.toISOString().split('T')[0],
+        type,
+        price,
+        shares,
+        amount,
+        grid_level: gridLevel
+      };
+    }),
+    daily_values: Array(365).fill().map((_, index) => {
+      const date = new Date("2024-03-12");
+      date.setDate(date.getDate() + index);
+      
+      // Generate a somewhat realistic portfolio value pattern
+      const baseValue = 15000;
+      const trend = Math.sin(index / 40) * 800 + (index / 365) * 3000;
+      const noise = (Math.random() - 0.5) * 150;
+      const value = baseValue + trend + noise;
+      
+      // Generate a somewhat realistic stock price pattern
+      const basePrice = 375;
+      const priceTrend = Math.sin(index / 20) * 30;
+      const priceNoise = (Math.random() - 0.5) * 8;
+      const close = basePrice + priceTrend + priceNoise;
+      
+      return {
+        date: date.toISOString().split('T')[0],
+        close,
+        cash: value * 0.4 + (Math.random() - 0.5) * 300,
+        shares: (value * 0.6) / close,
+        value
+      };
+    }),
+    metrics: {
+      initial_value: 15000,
+      final_value: 17250,
+      total_return: 0.15,
+      total_return_pct: 15,
+      annualized_return: 0.28,
+      annualized_return_pct: 28,
+      max_drawdown: 0.07,
+      max_drawdown_pct: 7,
+      sharpe_ratio: 2.1,
+      num_trades: 48,
+      buy_trades: 24,
+      sell_trades: 24,
+      trade_profit: 2250
+    },
+    created_at: "2025-03-12T05:30:00.000Z"
+  }
 };
 
 export default {
   mockStockData,
   mockGridLevels,
   mockStrategies,
-  mockBacktestResult
+  mockBacktestResults
 };

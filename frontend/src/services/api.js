@@ -98,8 +98,8 @@ export const getAllStrategies = async () => {
 // Backtest API calls
 export const runBacktest = async (backtestData) => {
   if (USE_MOCK_DATA) {
-    console.log('Running mock backtest');
-    return mockBacktestResult;
+    console.log('Running mock backtest for strategy:', backtestData.strategy_id);
+    return mockBacktestResults[backtestData.strategy_id] || mockBacktestResults['mock-strategy-1'];
   }
   
   try {
@@ -113,7 +113,11 @@ export const runBacktest = async (backtestData) => {
 export const getBacktestResult = async (backtestId) => {
   if (USE_MOCK_DATA) {
     console.log('Getting mock backtest result');
-    return mockBacktestResult;
+    // For simplicity, we'll map backtest IDs to strategy IDs
+    if (backtestId === 'mock-backtest-2') {
+      return mockBacktestResults['mock-strategy-2'];
+    }
+    return mockBacktestResults['mock-strategy-1'];
   }
   
   try {
