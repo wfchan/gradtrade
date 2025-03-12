@@ -73,6 +73,10 @@ const Backtest = () => {
     setError(null);
     
     try {
+      // Get the selected strategy to extract the symbol
+      const selectedStrategy = strategies.find(s => s._id === formData.strategy_id);
+      const symbol = selectedStrategy ? selectedStrategy.symbol : '';
+      
       // Format dates for API
       const start_date = formData.start_date.toISOString().split('T')[0];
       const end_date = formData.end_date.toISOString().split('T')[0];
@@ -80,10 +84,12 @@ const Backtest = () => {
       const result = await runBacktest({
         ...formData,
         start_date,
-        end_date
+        end_date,
+        symbol // Pass the symbol to the API
       });
       
-      navigate(`/backtest-results/${result._id}`);
+      // Include the symbol as a query parameter for proper results display
+      navigate(`/backtest-results/${result._id}?symbol=${symbol}`);
     } catch (err) {
       setError(err.message || 'Failed to run backtest');
       setLoadingBacktest(false);

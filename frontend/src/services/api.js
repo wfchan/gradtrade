@@ -98,8 +98,29 @@ export const getAllStrategies = async () => {
 // Backtest API calls
 export const runBacktest = async (backtestData) => {
   if (USE_MOCK_DATA) {
-    console.log('Running mock backtest for strategy:', backtestData.strategy_id);
-    return mockBacktestResults[backtestData.strategy_id] || mockBacktestResults['mock-strategy-1'];
+    // Find the strategy by ID
+    const strategy = mockStrategies.find(s => s._id === backtestData.strategy_id);
+    
+    if (strategy) {
+      // Determine which backtest result to use based on the symbol
+      if (strategy.symbol === 'MSFT') {
+        return {
+          ...mockBacktestResults['mock-strategy-2'],
+          _id: `mock-backtest-${Date.now()}` // Generate a unique ID to prevent cache issues
+        };
+      } else if (strategy.symbol === 'AAPL') {
+        return {
+          ...mockBacktestResults['mock-strategy-1'],
+          _id: `mock-backtest-${Date.now()}` // Generate a unique ID to prevent cache issues
+        };
+      }
+    }
+    
+    // Default to AAPL if no matching strategy found
+    return {
+      ...mockBacktestResults['mock-strategy-1'],
+      _id: `mock-backtest-${Date.now()}` // Generate a unique ID to prevent cache issues
+    };
   }
   
   try {
@@ -112,11 +133,21 @@ export const runBacktest = async (backtestData) => {
 
 export const getBacktestResult = async (backtestId) => {
   if (USE_MOCK_DATA) {
-    console.log('Getting mock backtest result');
-    // For simplicity, we'll map backtest IDs to strategy IDs
-    if (backtestId === 'mock-backtest-2') {
+    // Check if this is a MSFT backtest based on the ID
+    if (backtestId.includes('mock-backtest-') && backtestId.length > 20) {
+      // This is a dynamically generated backtest ID
+      // Extract the strategy from the URL if possible
+      const urlParams = new URLSearchParams(window.location.search);
+      const symbol = urlParams.get('symbol');
+      
+      if (symbol === 'MSFT') {
+        return mockBacktestResults['mock-strategy-2'];
+      }
+    } else if (backtestId === 'mock-backtest-2') {
       return mockBacktestResults['mock-strategy-2'];
     }
+    
+    // Default to AAPL
     return mockBacktestResults['mock-strategy-1'];
   }
   
