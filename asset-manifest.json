@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/gradtrade/static/css/main.0b38960e.css",
-    "main.js": "/gradtrade/static/js/main.1ce2b1df.js",
+    "main.js": "/gradtrade/static/js/main.995495c0.js",
     "index.html": "/gradtrade/index.html",
     "main.0b38960e.css.map": "/gradtrade/static/css/main.0b38960e.css.map",
-    "main.1ce2b1df.js.map": "/gradtrade/static/js/main.1ce2b1df.js.map"
+    "main.995495c0.js.map": "/gradtrade/static/js/main.995495c0.js.map"
   },
   "entrypoints": [
     "static/css/main.0b38960e.css",
-    "static/js/main.1ce2b1df.js"
+    "static/js/main.995495c0.js"
   ]
 }
